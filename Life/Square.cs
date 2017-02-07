@@ -27,8 +27,8 @@ namespace Life
 			State = State.DEAD;
 		}
 
-		public static State randState(){
-			return new Random().Next(2);
+		public static State RandState(){
+			return (State) new Random().Next(2);
 		}
 	}
 }
