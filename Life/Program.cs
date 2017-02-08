@@ -6,7 +6,8 @@ namespace Life
 	{
 		public static void Main(string[] args)
 		{
-			Console.WriteLine("Hello World!");
+			Board b = new Board(55,65, 1000000000);
+			b.Run();
 		}
 	}
 }
