@@ -60,15 +60,21 @@ namespace Life
 			Initialise(_board1);
 			Initialise(_board2);
 			Seed(_currentBoard);
-			_iterations = iterations;
+			_maximumIterations = iterations;
+			Tf = Print;
+			Tf += IncreaseGeneration;
 		}
 
 		private int _REFRESH_RATE_MS = 50; 
-		private int _iterations;
+		private int _maximumIterations;
 		private MoveGenerator _mg;
 		private Square[,] _board1;
 		private Square[,] _board2;
 		private Square[,] _currentBoard;
+		private TickFinished Tf;
+		private int _currentGeneration = 0;
+		public delegate void TickFinished(Square[,] _board);
+
 
 		public int Height {
 			get{ return _currentBoard.GetLength(0);}
@@ -101,6 +107,10 @@ namespace Life
 					toBoard[row, col].State = fromBoard[row, col].State;
 				};
 			};
+		}
+
+		private void IncreaseGeneration(Square[,] board){
+			_currentGeneration += 1;
 		}
 
 		private Boolean InBounds(Tuple<int, int> coord){
@@ -149,12 +159,13 @@ namespace Life
 			}
 			_currentBoard = _board2;
 			_board2 = _board1;
+			Tf(_currentBoard);
 		}
 
-		private void Print(){
+		private void Print(Square[,] b){
 			for(int row = 0; row < Height; row++) {
 				for(int col = 0; col < Width; col++) {
-					_currentBoard[row, col].Print();
+					b[row, col].Print();
 				}
 				Console.WriteLine("");
 			}
@@ -162,10 +173,9 @@ namespace Life
 		}
 
 		public void Run(){
-			for(int generation = 0; generation < _iterations; generation++) {
+			while(_currentGeneration < _maximumIterations) {
 				Console.Clear();
 				Tick();
-				Print();
 				Thread.Sleep(_REFRESH_RATE_MS);
 			}
 
